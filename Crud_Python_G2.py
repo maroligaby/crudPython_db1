@@ -31,7 +31,7 @@ def criar_tabela(conexao):
                     CREATE TABLE IF NOT EXISTS funcionarios (
                         id INTEGER,
                         nome TEXT,
-                        data_nascimento TEXT,
+                        data_nascimento DATE,
                         salario REAL
                     );
                     """)
@@ -116,13 +116,40 @@ def incluir(conexao):
         sleep(2)
     else:
         nome = str(input('\nNome: '))
-        data_nascimento = input('\nData de nascimento (formato:YYYY-MM-DD): ')
-        salario = float(input('\nSalário: '))
+        dia_tipo = False
+        while dia_tipo == False:
+            try:
+                dia_nascimento = int(input('\nDia de nascimento: '))
+                dia_tipo = True
+            except ValueError:
+                print("Oops! Data inválida, insira apenas números!")
+        mes_tipo = False
+        while mes_tipo == False:
+            try:
+                mes_nascimento = int(input('\nMês de nascimento: '))
+                mes_tipo = True
+            except ValueError:
+                print("Oops! Data inválida, insira apenas números até 12!")
+        ano_tipo = False
+        while ano_tipo == False:
+            try:
+                ano_nascimento = int(input('\nAno de nascimento: '))
+                ano_tipo = True
+            except ValueError:
+                print("Oops! Data inválida, insira apenas números!")
+        salario_tipo = False
+        while salario_tipo == False:
+            try:
+                salario = float(input('\nSalário: '))
+                salario_tipo = True
+                
+            except ValueError:
+                print("Oops!  Esse não é um salário válido, insira apenas números!")
         
         
         confirma = input('\nConfirma a inclusão [S/N]? ').upper()
         if confirma == 'S':
-            comando = f'INSERT INTO funcionarios VALUES({id}, "{nome}","{data_nascimento}",{salario})'
+            comando = f'INSERT INTO funcionarios VALUES({id}, "{nome}","{ano_nascimento}-{mes_nascimento}-{dia_nascimento}",{salario})'
             print("Registro incluido")
             sleep(2)
 
@@ -172,7 +199,28 @@ def alterar(conexao):
                 cursor.close()
                 
         elif campo == "2":
-            data_nascimento = input('\nDigite a nova data de nascimento: ')
+            dia_tipo = False
+            while dia_tipo == False:
+                try:
+                    dia_nascimento = int(input('\nNovo dia de nascimento: '))
+                    dia_tipo = True
+                except ValueError:
+                    print("Oops! Data inválida, insira apenas números!")
+            mes_tipo = False
+            while mes_tipo == False:
+                try:
+                    mes_nascimento = int(input('\nNovo mês de nascimento: '))
+                    mes_tipo = True
+                except ValueError:
+                    print("Oops! Data inválida, insira apenas números até 12!")
+            ano_tipo = False
+            while ano_tipo == False:
+                try:
+                    ano_nascimento = int(input('\nNovo ano de nascimento: '))
+                    ano_tipo = True
+                except ValueError:
+                    print("Oops! Data inválida, insira apenas números!")
+            data_nascimento = f"{ano_nascimento}-{mes_nascimento}-{dia_nascimento}"
     
             confirma = input('\nConfirma a alteração [S/N]? ').upper()
             if confirma == 'S':
@@ -184,7 +232,14 @@ def alterar(conexao):
                 cursor.close()
             
         elif campo == "3":
-            salario = float(input('\nDigite o novo salário: '))
+            salario_tipo = False
+            while salario_tipo == False:
+                try:
+                    salario = float(input('\nNovo salário: '))
+                    salario_tipo = True
+                    
+                except ValueError:
+                    print("Oops!  Esse não é um salário válido, insira apenas números!")
     
             confirma = input('\nConfirma a alteração [S/N]? ').upper()
             if confirma == 'S':
@@ -280,7 +335,7 @@ def buscar(conexao):
         
     
     elif campo == "3":
-        dataBusca = input('\nDigite a de data de nascimento (YYYY-MM-DD) para busca: ')
+        dataBusca = input('\nDigite a de data de nascimento para busca (formato: YYYY-MM-DD): ')
                    
         cursor.execute(f"SELECT * FROM funcionarios WHERE data_nascimento LIKE '%{dataBusca}%'")
         registro = 0
